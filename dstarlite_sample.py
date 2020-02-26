@@ -1,4 +1,8 @@
 # This is the D* Lite algorithm (original version - not optimized for the queue U)
+# Original algorithm: http://idm-lab.org/bib/abstracts/papers/aaai02b.pdf
+# S. Koenig and M. Likhachev. D* Lite. In Proceedings of the AAAI Conference of Artificial Intelligence (AAAI), 476-483, 2002.
+# Implementation inspired by https://github.com/mdeyo/d-star-lite
+
 import time
 import threading
 import cv2
@@ -224,7 +228,7 @@ class StateGraph:
         while((k_old[0] < new_key[0]) or (k_old[0] == new_key[0] and k_old[1] < new_key[1]) or self.rhs(s_start) != self.g(s_start)):
             u = self.U_Pop()
             #print(u + " : " + str(k_old) + " / " + str(self.g(u)) + ", " + str(self.rhs(u)))
-            #k_old = self.U_TopKey()
+            #k_old = self.U_TopKey() # TODO: REVISE
             k_new = self.CalculateKey(s_start, u)
             if (k_old[0] < k_new[0]) or (k_old[0] == k_new[0] and k_old[1] < k_new[1]):
                 self.U_Insert(u, k_new)
@@ -524,7 +528,7 @@ try:
                 map_img[item[1],item[0]] = [0,255,0]
 
             mutex_mat.acquire()
-            buffer_mat = cv2.resize(map_img.copy(),(map_img.shape[1]*1,map_img.shape[0]*1), interpolation=cv2.INTER_NEAREST)#.data = map_img.data.copy()
+            buffer_mat = cv2.resize(map_img.copy(),(map_img.shape[1]*1,map_img.shape[0]*1), interpolation=cv2.INTER_NEAREST)
             mutex_mat.release()
         else:
             print("REINITIALIZING")
